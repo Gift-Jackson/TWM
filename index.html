@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trek With Me</title>
+    <!-- font awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- style -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            box-sizing: border-box;
+            color: #444;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #fefefe;
+        }
+
+        .container {
+            width: 80%;
+            margin: 10px auto 0;
+            background-color: #fefefe;
+            border-radius: 50px;
+            min-height: 60px;
+            height: auto;
+            /* padding: 1rem; */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9;
+        }
+
+        .container.active {
+            /* box-shadow: 0 1px 2px mediumaquamarine; */
+            z-index: 9;
+            border-radius: 20px;
+        }
+
+        header {
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px 0 5px;
+        }
+
+        .logo {
+            height: 50px;
+            width: 50px;
+            display: grid;
+            place-items: center;
+            background-color: #7b68ee;
+            border-radius: 50%;
+        }
+
+        .logo h1 {
+            color: #fefefe;
+            font-size: 25px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav ul a {
+            color: #444;
+            opacity: 0.8;
+        }
+
+        nav ul a:hover,
+        .current {
+            color: mediumslateblue;
+            opacity: 1;
+        }
+
+        /* menu toggle */
+
+        .toggle-box {
+            height: 40px;
+            width: 40px;
+            /* border: 1px solid; */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toggle-box:active {
+            background-color: #ddd;
+            border-radius: 50%;
+        }
+
+        .toggle {
+            position: relative;
+            height: 2px;
+            width: 70%;
+            border-radius: 50px;
+            background-color: #444;
+        }
+
+        .toggle.active {
+            background-color: transparent;
+        }
+
+        .toggle::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 100%;
+            border-radius: 50px;
+            background-color: #444;
+            transform: translatey(-5px);
+            transition: .2s;
+        }
+
+        .toggle::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2px;
+            width: 100%;
+            border-radius: 50px;
+            background-color: #444;
+            transform: translatey(5px);
+            transition: .2s;
+        }
+
+        .toggle.active::before {
+            /* background-color: #fefefe; */
+            transform: translateY(0) rotate(45deg);
+        }
+
+        .toggle.active::after {
+            /* background-color: #fefefe; */
+            transform: translateY(0) rotate(-45deg);
+        }
+
+        .menu {
+            height: 0px;
+            overflow: hidden;
+            transition: .2s;
+            padding: 0 10px;
+        }
+
+        .menu.active {
+            height: 220px;
+            transition: .2s;
+        }
+
+        .menu nav ul {
+            display: block;
+            text-align: center;
+        }
+
+        .menu nav ul a {
+            line-height: 50px;
+            display: block;
+        }
+
+        .menu nav ul a:hover {
+            background-color: #eee;
+            border-radius: 15PX;
+        }
+
+        /* overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            display: none;
+            z-index: 8;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* hero section */
+        .hero-section {
+            height: 500px;
+            /* border: 1px solid; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .hero-container {
+            text-align: center;
+        }
+
+        .brand h1 {
+            background: linear-gradient(45deg, mediumslateblue, royalblue, coral, crimson, mediumspringgreen, royalblue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: clamp(2.5rem, 1.4286rem + 4.2857vw, 4.375rem);
+            background-size: 400%;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+            text-transform: capitalize;
+            /* margin-bottom: 30px; */
+            animation: text 20s ease infinite;
+        }
+
+        @keyframes text {
+            0% {
+                background-position: 0%;
+            }
+
+            100% {
+                background-position: 400%;
+            }
+        }
+
+        .waitlist-form {
+            margin-top: 30px;
+            height: auto;
+            /* display: flex; */
+            /* border: 1px solid; */
+        }
+
+        .waitlist-form form {
+            height: auto;
+            min-height: 50px;
+            width: 100%;
+            border: 1px solid mediumslateblue;
+            display: flex;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+
+        .waitlist-form form input {
+            width: 70%;
+            border: none;
+            padding-left: 15px;
+            outline: none;
+        }
+
+        .btn-1 {
+            width: 30%;
+            border: none;
+            background-color: mediumslateblue;
+            color: #fefefe;
+            /* border-bottom: 4px solid rgba(0, 0, 0, .2); */
+            cursor: pointer;
+        }
+
+        .btn-1:hover,
+        .btn-2:hover,
+        .btn-3:hover {
+            filter: brightness(90%);
+        }
+
+        /* next section */
+        #about {
+            background-color: #7b68ee;
+            min-height: 500px;
+            height: auto;
+            transform: translateY(-20px);
+            padding: 2rem;
+        }
+
+        .title {
+            margin: 50px 0;
+        }
+
+        .title h1 {
+            color: #fefefe;
+            font-size: clamp(1.875rem, 1.1607rem + 2.8571vw, 3.125rem);
+        }
+
+        .mark {
+            color: #00fa9a;
+            text-shadow: 0 2px 5px #66cdaa;
+        }
+
+        .content {
+            width: 50%;
+        }
+
+        .content img {
+            width: 100%;
+        }
+
+        .content p {
+            padding: 10px;
+            border: 1px solid #fefefe;
+            border-radius: 1rem;
+            color: #fefefe;
+            margin-bottom: 20px;
+            transition: .2s ease;
+        }
+
+        .content p:hover {
+            background-color: #fefefe;
+            color: #444;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+        }
+
+        .btn-2 {
+            height: 50px;
+            width: 200px;
+            border: none;
+            border-radius: 1rem;
+            background-color: #66cdaa;
+            font-size: 17px;
+            margin-left: 2px;
+            color: #fff;
+            border-bottom: 5px solid rgba(0, 0, 0, .3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+        }
+
+        .fa-arrow-right {
+            color: #fefefe;
+        }
+
+        .content-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            min-height: 300px;
+            height: auto;
+        }
+
+        .svg {
+            transform: translateY(-20px);
+        }
+        .svg2{
+            transform: translateY(50px);
+        }
+
+        /* Hiring scetion */
+        #hire {
+            padding: 2rem;
+        }
+
+        #hire .title h1 {
+            color: #444;
+        }
+
+        .mark-2 {
+            color: #7b68ee;
+        }
+
+        .content ul {
+            padding: 2rem;
+        }
+
+        .content li {
+            line-height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .content li:hover {
+            color: #7b68ee;
+        }
+
+        .content form {
+            width: 80%;
+            margin: auto;
+        }
+
+        .content form input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            border-radius: 10px;
+        }
+
+        .btn-3 {
+            width: 50%;
+            height: 45px;
+            border: none;
+            background-color: #7b68ee;
+            color: #fefefe;
+            border-radius: 10px;
+            border-bottom: 5px solid rgba(0, 0, 0, .3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+        }
+
+        .content form h2 {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            background-color: #7b68ee;
+        }
+
+        footer p {
+            color: #fefefe;
+            font-size: 17px;
+        }
+
+        .btn-1:active,
+        .btn-2:active,
+        .btn-3:active {
+            transform: scale(0.9);
+            border-bottom: unset;
+        }
+
+        /* contact */
+        .head {
+            padding-left: 25px;
+        }
+
+        .head h1 {
+            color: #444;
+        }
+
+        .wrap {
+            text-align: center;
+        }
+
+        .btn-4 {
+            height: 50px;
+            width: 200px;
+            background-color: #fefefe;
+            border: 1px solid #7b68ee;
+            color: #7b68ee;
+            font-size: 17px;
+            border-radius: 50px;
+            margin-top: 30px;
+        }
+
+        /* responsiveness */
+        @media (max-width:786px) {
+            .toggle-box {
+                display: flex;
+            }
+
+            header nav ul {
+                display: none;
+            }
+
+            .container {
+                width: 95%;
+                border-radius: 30PX;
+                min-height: 50px;
+            }
+
+            header {
+                height: 50px;
+            }
+
+            .logo {
+                height: 40px;
+                width: 40px;
+            }
+
+            .waitlist-form form {
+                flex-direction: column;
+                border: none;
+                overflow: unset;
+                gap: 20px;
+            }
+
+            .waitlist-form form input {
+                height: 50px;
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+            }
+
+            .waitlist-form form input:focus {
+                border: 1px solid #7b68ee;
+            }
+
+            .waitlist-form .btn-1 {
+                height: 50px;
+                width: 100%;
+                border-radius: 10px;
+                border-bottom: 5px solid rgba(0, 0, 0, .3);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+            }
+
+            section,
+            #about,
+            #hire {
+                padding: 1rem;
+            }
+
+            .content-container {
+                flex-direction: column-reverse;
+                /* padding: 1rem; */
+            }
+
+            .content {
+                width: 100%;
+            }
+
+            .content form {
+                width: 100%;
+            }
+
+            .content ul {
+                padding: 10px;
+            }
+
+            .content li {
+                line-height: 30px;
+                font-size: 15px;
+            }
+
+            .inverse {
+                flex-direction: column;
+            }
+
+            footer {
+                padding: 20px;
+            }
+
+            footer p {
+                font-size: 13px;
+            }
+
+            .head {
+                padding-left: unset;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>t</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a class="current link" href="#">Home</a></li>
+                    <li><a class="link" href="#about">About</a></li>
+                    <li><a class="link" href="#hire">Apply Now</a></li>
+                    <li><a class="link" href="#contact">Contacts</a></li>
+                </ul>
+            </nav>
+            <div class="toggle-box">
+                <div class="toggle"></div>
+            </div>
+        </header>
+
+        <!-- menu -->
+        <div class="menu">
+            <nav>
+                <ul>
+                    <li><a class="current link" href="#">Home</a></li>
+                    <li><a class="link" href="#about">About</a></li>
+                    <li><a class="link" href="#hire">Apply Now</li>
+                    <li><a class="link" href="#contact">Contacts</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- overlay -->
+    <div class="overlay"></div>
+
+    <!-- hero section -->
+    <div class="hero-section">
+        <div class="hero-container">
+            <div class="brand">
+                <h1>trek with me</h1>
+            </div>
+            <div class="slogan">
+                <p>My personal trek buddy...</p>
+            </div>
+            <div class="waitlist-form">
+                <form>
+                    <input type="email" name="email" id="email" placeholder="E-mail Address">
+                    <button class="btn btn-1">Join Waitlist!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of hero section -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#7b68ee" fill-opacity="1"
+            d="M0,32L48,69.3C96,107,192,181,288,181.3C384,181,480,107,576,69.3C672,32,768,32,864,69.3C960,107,1056,181,1152,213.3C1248,245,1344,235,1392,229.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+        </path>
+    </svg>
+
+    <!-- hiring section -->
+    <section id="about">
+        <div class="title">
+            <h1>All About <span class="mark">TWM</span></h1>
+        </div>
+        <div class="content-container">
+
+            <div class="content">
+                <p>Embark on an exhilarating journey with "Trek with Me (TWM)" – an innovative social app designed to
+                    enhance your trekking experience. Connect with like-minded individuals heading in the same direction
+                    and transform your outdoor adventures into exciting and social escapades.
+                </p>
+                <p>
+                    Trek with Me (TWM) is not just an app; it's a gateway to shared exploration. Seamlessly integrated
+                    with your trekking endeavors, this revolutionary platform allows you to effortlessly discover fellow
+                    pedestrians who are embarking on similar routes. By connecting with these like-minded explorers, you
+                    can elevate your trekking experience from mere physical activity to a captivating social
+                    interaction.
+                </p>
+                <p>
+                    Imagine traversing breathtaking trails while engaging in stimulating conversations with fellow
+                    trekkers. TWM empowers you to make meaningful connections along your journey, forging new
+                    friendships and fostering a sense of camaraderie. As you tread on, the app becomes a catalyst for
+                    shared experiences, allowing you to exchange stories, share laughter, and create unforgettable
+                    memories.
+                </p>
+                <p>
+                    With TWM, the trekking community becomes a vibrant tapestry of individuals driven by a common
+                    passion for adventure and exploration. It's an opportunity to break free from solitude and immerse
+                    yourself in the collective energy of like-minded souls. Let TWM be your trusted companion as you
+                    embrace the beauty of nature and the thrill of human connection.
+                </p>
+                <p>Join us on this transformative expedition.</p>
+                <a href="#">
+                    <button class="btn btn-2">Take a step <i class="fa-solid fa-arrow-right fa-beat-fade"></i></button>
+                </a>
+            </div>
+            <div class="content">
+                <img src="walk.svg" alt="walk-svg">
+            </div>
+        </div>
+    </section>
+    <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#7b68ee" fill-opacity="1"
+            d="M0,192L48,208C96,224,192,256,288,234.7C384,213,480,139,576,133.3C672,128,768,192,864,229.3C960,267,1056,277,1152,250.7C1248,224,1344,160,1392,128L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z">
+        </path>
+    </svg>
+
+    <!-- Hiring -->
+    <section id="hire">
+        <div class="title">
+            <h1>We are <span class="mark-2">hiring</span></h1>
+        </div>
+        <div class="content-container inverse">
+            <div class="content">
+                <ul>
+                    <li>Mobile App Developer (Frontend)</li>
+                    <li>Mobile App Developer (Backend)</li>
+                    <li>Graphic Designer</li>
+                    <li>UI Designer</li>
+                    <li>UX writer</li>
+                    <li>Social Media Manager</li>
+                </ul>
+            </div>
+            <div class="content">
+                <form>
+                    <h2>Apply Here</h2>
+                    <input type="text" placeholder="Fullname">
+                    <input type="email" placeholder="E-mail Address">
+                    <select>
+                        <option value="">Select Role</option>
+                        <option value="Frontend app">Mobile App Developer (Frontend)</option>
+                        <option value="Backend app">Mobile App Developer (Backend)</option>
+                        <option value="Ui">Graphic Designer</option>
+                        <option value="Ui">UI Designer</option>
+                        <option value="Ux">UX writer</option>
+                        <option value="Social media manager">Social Media Manager</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <textarea name="message" id="message" placeholder="Paste your portfoilio link"></textarea>
+                    <button class="btn btn-3">Apply</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- contacts -->
+    <section id="contact">
+        <div class="title head">
+            <h1>Contact <span class="mark-2">Us</span></h1>
+        </div>
+        <div class="content-container inverse">
+            <div class="content">
+                <img src="contact.svg" alt="contact svg">
+            </div>
+            <div class="content">
+                <div class="wrap">
+                    <h2>Contact Us via E-mail</h2>
+                    <a href="mailto:giftjacksun@gmail.com">
+                        <button class="btn-4">Click Here!</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <svg class="svg2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#7b68ee" fill-opacity="1"
+            d="M0,192L48,176C96,160,192,128,288,149.3C384,171,480,245,576,266.7C672,288,768,256,864,208C960,160,1056,96,1152,101.3C1248,107,1344,181,1392,218.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+        </path>
+    </svg>
+    <!-- footer -->
+    <footer>
+        <p>Trek With Me - Gift Jacksun (CEO) <br>Copyright &copy; 2023</p>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        const toggle = document.querySelector(".toggle-box");
+        const toggleBar = document.querySelector(".toggle");
+        const headContainer = document.querySelector(".container");
+        const overlay = document.querySelector(".overlay");
+        const link = document.querySelectorAll(".link");
+
+        toggle.addEventListener("click", () => {
+            let menu = document.querySelector(".menu").classList.toggle("active");
+            // let body = document.body.classList.toggle(".active");
+            toggleBar.classList.toggle("active");
+            headContainer.classList.toggle("active");
+            overlay.classList.toggle("active");
+        });
+        link.forEach((el) => {
+            el.addEventListener("click", () => {
+                overlay.classList.remove("active");
+                toggleBar.classList.remove("active");
+                headContainer.classList.remove("active");
+                let menu = document.querySelector(".menu").classList.remove("active");
+            })
+        })
+    </script>
+
+    <!-- whatsapp button -->
+    <script type="text/javascript">
+            (function () {
+                var options = {
+                    whatsapp: "+2348137411338", // WhatsApp number
+                    call_to_action: "Message us", // Call to action
+                    position: "right", // Position may be 'right' or 'left'
+                };
+                var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
+                var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+                s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
+                var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+            })();
+    </script>
+</body>
+
+</html>
